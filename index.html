@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026.06.06瓜瓜生日快乐！</title>
+    <title>2026.06.06 瓜瓜生日快乐！</title>
     <style>
+        /* --- 基础样式 --- */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -16,55 +17,64 @@
             color: #4a4a4a;
             display: flex;
             min-height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* 防止海量弹窗和彩带让屏幕出现滚动条 */
             position: relative;
         }
+
+        /* --- 全屏填充背景层 --- */
         .page-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-
-            background-image: url('bg.jpg'); 
-            
-            background-size: cover;      
-            background-repeat: no-repeat; 
+            /* 👇 确保图片文件名正确 */
+            background-image: url('7c1e116f83516870cb823c557657909.jpg'); 
+            background-size: cover;       
+            background-repeat: no-repeat;  
             z-index: -1;                   
         }
 
-
+        /* 💻 电脑端（宽屏）优化：移到右下角，高度无所谓 */
         @media screen and (min-width: 769px) {
             body {
                 justify-content: flex-end; 
-                align-items: center;
-                padding-right: 10%; 
+                align-items: flex-end;
+                padding-right: 8%; 
+                padding-bottom: 6%; 
             }
             .page-background {
                 background-position: 50% 12%; 
             }
         }
 
+        /* 📱 手机端（竖屏）极致防挡脸优化 */
         @media screen and (max-width: 768px) {
             body {
-                justify-content: flex-end !important; 
-                align-items: center;
-                padding-bottom: calc(env(safe-area-inset-bottom) + 30px) !important; 
+                justify-content: flex-end; /* 严格靠底部对齐 */
+                align-items: center;       
                 padding-left: 20px;
                 padding-right: 20px;
+                padding-bottom: calc(env(safe-area-inset-bottom) + 20px); /* 留出手机底部安全区 */
             }
             .page-background {
-                background-position: center 8%; 
+                background-position: center 5% !important; /* 把图片拼命往上提，人脸留在最上方 */
+            }
+            
+            /* 💡 手机端核心约束：锁死框的最大高度，绝对不让它往上蔓延挡脸 */
+            .letter-container {
+                max-height: 32vh !important; /* 强制限制在屏幕下方三分之一处 */
             }
         }
 
+        /* --- 信件卡片样式（微透毛玻璃，内容可自主滚动） --- */
         .letter-container {
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.78); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             width: 100%;
             max-width: 340px; 
-            padding: 35px 25px;
+            padding: 24px 22px 15px 22px; /* 调整内边距 */
             border-radius: 24px;
             box-shadow: 0 10px 35px rgba(40, 65, 95, 0.15);
             text-align: center;
@@ -72,26 +82,44 @@
             animation: float 4s ease-in-out infinite;
             position: relative;
             z-index: 10;
+            
+            /* 开启卡片整体的Flex排版 */
+            display: flex;
+            flex-direction: column;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-6px); }
         }
 
         .letter-title {
-            font-size: 1.35rem;
-            color: #3a5fcd;
-            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: #3a5fcd; 
+            margin-bottom: 12px;
             font-weight: 600;
+            flex-shrink: 0; /* 标题不参与挤压 */
+        }
+
+        /* 💡 滚动文案包裹区 */
+        .scroll-content-area {
+            overflow-y: auto; /* 核心：文字多了可以在这里面单独上下划动滚动 */
+            flex-grow: 1;
+            margin-bottom: 15px;
+            padding-right: 4px;
+            
+            /* 隐藏自带的丑陋滚动条（让界面更干净） */
+            scrollbar-width: none; /* Firefox */
+        }
+        .scroll-content-area::-webkit-scrollbar {
+            display: none; /* Chrome Safari */
         }
 
         .letter-content {
-            font-size: 0.95rem;
-            line-height: 1.8;
+            font-size: 0.92rem;
+            line-height: 1.7;
             color: #4a5568;
             text-align: left;
-            margin-bottom: 25px;
             white-space: pre-line;
         }
 
@@ -99,7 +127,7 @@
             background-color: #f0f4f8;
             color: #3a5fcd;
             border: 2px solid #3a5fcd;
-            padding: 11px 40px;
+            padding: 9px 40px;
             font-size: 0.95rem;
             font-weight: bold;
             border-radius: 30px;
@@ -108,14 +136,17 @@
             box-shadow: 0 4px 12px rgba(58, 95, 205, 0.15);
             display: inline-block;
             outline: none;
+            flex-shrink: 0; /* 按钮始终固定在最下面 */
+            width: fit-content;
+            margin: 0 auto;
         }
         .open-btn:hover {
             background-color: #3a5fcd;
             color: #ffffff;
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
         .open-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.97);
         }
 
         /* --- 全屏彩带画布 --- */
@@ -127,59 +158,56 @@
             z-index: 999;
         }
 
+        /* --- 弹窗样式 --- */
         .dialog-popup {
             position: fixed;
-
-            background: rgba(38, 58, 84, 0.5); 
+            background: rgba(38, 58, 84, 0.88); 
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-
-            border: 1px solid rgba(173, 216, 230, 0.3); 
+            border: 1px solid rgba(173, 216, 230, 0.35); 
             border-radius: 20px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-
             color: #ffffff; 
-            
             opacity: 0;
             transform: scale(0.4);
             transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
             pointer-events: none;
             white-space: normal; 
-            max-width: 75vw; 
+            max-width: 80vw; 
             word-wrap: break-word;
             text-align: center;
         }
-        
         @media screen and (min-width: 769px) {
-            .dialog-popup {
-                max-width: 320px;
-            }
+            .dialog-popup { max-width: 320px; }
         }
-        .dialog-popup.show {
-            opacity: 1;
-            transform: scale(1);
-        }
+        .dialog-popup.show { opacity: 1; transform: scale(1); }
     </style>
 </head>
 <body>
 
+    <!-- 全屏填充背景层 -->
     <div class="page-background"></div>
 
-    <audio id="bg-music" src="bgm.mp3" loop></audio>
+    <!-- 背景音频标签（隐藏） -->
+    <audio id="bg-music" src="happybirthday.mp3" loop></audio>
 
+    <!-- 信件主体卡片（高度锁死，多余文本可流畅下滑） -->
     <div class="letter-container">
         <h1 class="letter-title">瓜瓜生日快乐！</h1>
-        <div class="letter-content">祝我们的瓜瓜生日快乐！
-            祝我们瓜瓜的19岁生日快乐，在过去一年瓜瓜也是成功地读完现在这个阶段，也马上要进入新的阶段了。祝我们的瓜瓜在接下来的计算机工程顺顺利利。
+        
+        <!-- 新增局部滚动安全区 -->
+        <div class="scroll-content-area">
+            <div class="letter-content">祝我们的瓜瓜生日快乐！
+                祝我们瓜瓜的19岁生日快乐，在过去一年瓜瓜也是成功地读完现在这个阶段，也马上要进入新的阶段了。 祝我们的瓜瓜在接下来的计算机工程顺顺利利。</div>
         </div>
         
         <button class="open-btn" onclick="startSurprise()">开启惊喜</button>
     </div>
 
+    <!-- 彩带画布 -->
     <canvas id="confetti-canvas"></canvas>
 
     <script>
-
         const dialogTexts = [
             "奔赴前方 逃出雨季",
             "走吧 我的副驾",
@@ -231,24 +259,22 @@
             playMusic();          
         }
 
-        // --- 0. 音乐播放逻辑 ---
         function playMusic() {
             const music = document.getElementById('bg-music');
             if (music) {
                 music.play().catch(err => {
-                    console.log("音频自动播放被浏览器拦截，已做兼容处理", err);
+                    console.log("音频自动播放被拦截", err);
                 });
             }
         }
 
-        // --- 1. 彩带雨逻辑 ---
         function initConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             
-            const pieceCount = window.innerWidth < 500 ? 70 : 140; 
+            const pieceCount = window.innerWidth < 500 ? 65 : 140; 
             const pieces = [];
             const colors = ['#a2c2e8', '#e76f51', '#2a9d8f', '#e9c46a', '#3a5fcd', '#ccd5ae'];
             
@@ -284,7 +310,6 @@
             animate();
         }
 
-        // --- 2. 弹窗定位 ---
         function showMassiveDialogs() {
             const shuffledTexts = [...dialogTexts].sort(() => Math.random() - 0.5);
             const isMobile = window.innerWidth < 500;
@@ -296,11 +321,11 @@
                     dialog.textContent = text;
 
                     const minSize = isMobile ? 0.85 : 1.0;
-                    const maxSize = isMobile ? 1.25 : 1.65;
+                    const maxSize = isMobile ? 1.15 : 1.65;
                     const randomSize = (Math.random() * (maxSize - minSize) + minSize).toFixed(2);
                     
                     dialog.style.fontSize = `${randomSize}rem`;
-                    dialog.style.padding = `${randomSize * 8}px ${randomSize * 15}px`;
+                    dialog.style.padding = `${randomSize * 7}px ${randomSize * 14}px`;
                     dialog.style.zIndex = Math.floor(Math.random() * 100) + 100;
                     
                     document.body.appendChild(dialog);
@@ -309,11 +334,16 @@
                     const dialogWidth = dialog.offsetWidth;
                     const dialogHeight = dialog.offsetHeight;
 
-                    const maxWidth = window.innerWidth - dialogWidth - 20;
-                    const maxHeight = window.innerHeight - dialogHeight - 20;
+                    const paddingX = 15;
+                    const paddingTop = isMobile ? 60 : 20; 
+                    // 弹幕爆发时完全避开底部缩小的卡片，让视觉焦点集中在人脸周围
+                    const paddingBottom = isMobile ? 260 : 20; 
+
+                    const maxWidth = window.innerWidth - dialogWidth - (paddingX * 2);
+                    const maxHeight = window.innerHeight - dialogHeight - paddingTop - paddingBottom;
                     
-                    const randomX = Math.max(10, Math.floor(Math.random() * maxWidth));
-                    const randomY = Math.max(10, Math.floor(Math.random() * maxHeight));
+                    const randomX = Math.max(paddingX, Math.floor(Math.random() * maxWidth) + paddingX);
+                    const randomY = Math.max(paddingTop, Math.floor(Math.random() * maxHeight) + paddingTop);
                     
                     dialog.style.left = `${randomX}px`;
                     dialog.style.top = `${randomY}px`;
