@@ -34,7 +34,7 @@
             z-index: -1;                   
         }
 
-        /* 💻 电脑端（宽屏）优化：移到右下角，高度无所谓 */
+        /* 💻 电脑端（宽屏）布局 */
         @media screen and (min-width: 769px) {
             body {
                 justify-content: flex-end; 
@@ -46,19 +46,22 @@
                 background-position: 50% 12%; 
             }
         }
-        
+
+        /* 📱 手机端（竖屏）极致防挡脸、框体最沉底优化 */
         @media screen and (max-width: 768px) {
             body {
                 justify-content: flex-end; /* 严格靠底部对齐 */
                 align-items: center;       
                 padding-left: 20px;
                 padding-right: 20px;
+                /* 👇 极限下移：仅保留刚好避开手机底部黑条/白条的安全距离 */
                 padding-bottom: calc(env(safe-area-inset-bottom) + 10px); 
             }
             .page-background {
                 background-position: center 4% !important; /* 精准定位，把人脸稳稳锁在屏幕最上方 */
             }
-
+            
+            /* 手机端严格控制信封框高度上限，确保不往上蔓延 */
             .letter-container {
                 max-height: 28vh !important; /* 进一步压低高度到 28%，完全不碰脸 */
                 padding: 20px 20px 12px 20px !important; /* 紧凑内边距 */
@@ -78,28 +81,26 @@
 
         /* --- 信件卡片样式（微透毛玻璃，内容可自主滚动） --- */
         .letter-container {
-            background: rgba(255, 255, 255, 0.78); 
+            background: rgba(255, 255, 255, 0.76); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             width: 100%;
             max-width: 340px; 
-            padding: 24px 22px 15px 22px; /* 调整内边距 */
             border-radius: 24px;
             box-shadow: 0 10px 35px rgba(40, 65, 95, 0.15);
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.5);
             animation: float 4s ease-in-out infinite;
             position: relative;
-            z-index: 10;
+            z-index: 10; /* 保持在背景之上 */
             
-            /* 开启卡片整体的Flex排版 */
             display: flex;
             flex-direction: column;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
+            50% { transform: translateY(-5px); }
         }
 
         .letter-title {
@@ -107,21 +108,19 @@
             color: #3a5fcd; 
             margin-bottom: 12px;
             font-weight: 600;
-            flex-shrink: 0; /* 标题不参与挤压 */
+            flex-shrink: 0;
         }
 
-        /* 💡 滚动文案包裹区 */
+        /* 滚动文案包裹区 */
         .scroll-content-area {
-            overflow-y: auto; /* 核心：文字多了可以在这里面单独上下划动滚动 */
+            overflow-y: auto; 
             flex-grow: 1;
             margin-bottom: 15px;
             padding-right: 4px;
-            
-            /* 隐藏自带的丑陋滚动条（让界面更干净） */
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none; 
         }
         .scroll-content-area::-webkit-scrollbar {
-            display: none; /* Chrome Safari */
+            display: none; 
         }
 
         .letter-content {
@@ -145,7 +144,7 @@
             box-shadow: 0 4px 12px rgba(58, 95, 205, 0.15);
             display: inline-block;
             outline: none;
-            flex-shrink: 0; /* 按钮始终固定在最下面 */
+            flex-shrink: 0; 
             width: fit-content;
             margin: 0 auto;
         }
@@ -167,10 +166,10 @@
             z-index: 999;
         }
 
-        /* --- 弹窗样式 --- */
+        /* --- 弹窗样式（半透明冰晶灰蓝） --- */
         .dialog-popup {
             position: fixed;
-            background: rgba(38, 58, 84, 0.88); 
+            background: rgba(38, 58, 84, 0.85); 
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(173, 216, 230, 0.35); 
@@ -194,17 +193,13 @@
 </head>
 <body>
 
-    <!-- 全屏填充背景层 -->
     <div class="page-background"></div>
 
-    <!-- 背景音频标签（隐藏） -->
     <audio id="bg-music" src="bgm.mp3" loop></audio>
 
-    <!-- 信件主体卡片（高度锁死，多余文本可流畅下滑） -->
     <div class="letter-container">
         <h1 class="letter-title">瓜瓜生日快乐！</h1>
         
-        <!-- 新增局部滚动安全区 -->
         <div class="scroll-content-area">
             <div class="letter-content">祝我们的瓜瓜生日快乐！
                 祝我们瓜瓜的19岁生日快乐，在过去一年瓜瓜也是成功地读完现在这个阶段，也马上要进入新的阶段了。 祝我们的瓜瓜在接下来的计算机工程顺顺利利。</div>
@@ -213,7 +208,6 @@
         <button class="open-btn" onclick="startSurprise()">开启惊喜</button>
     </div>
 
-    <!-- 彩带画布 -->
     <canvas id="confetti-canvas"></canvas>
 
     <script>
@@ -257,7 +251,7 @@
             "被你看见的意义在于 我能感知到自身的轻盈",
             "宇宙的规则是遗忘 我偏要逆流而上 封存关于你的每一个瞬间",
             "下个冬天 下下个冬天 以后每一个冬天 我都知道我们还是会在一起",
-            "我会陪你一起去往所有未知的地方",
+            "我会陪你一起去往所有未知的地方"
         ];
 
         const dialogElements = [];
@@ -319,6 +313,7 @@
             animate();
         }
 
+        // --- 2. 升级版全屏乱飞弹窗算法 ---
         function showMassiveDialogs() {
             const shuffledTexts = [...dialogTexts].sort(() => Math.random() - 0.5);
             const isMobile = window.innerWidth < 500;
@@ -329,12 +324,12 @@
                     dialog.className = "dialog-popup";
                     dialog.textContent = text;
 
-                    const minSize = isMobile ? 0.85 : 1.0;
+                    const minSize = isMobile ? 0.8 : 1.0;
                     const maxSize = isMobile ? 1.15 : 1.65;
                     const randomSize = (Math.random() * (maxSize - minSize) + minSize).toFixed(2);
                     
                     dialog.style.fontSize = `${randomSize}rem`;
-                    dialog.style.padding = `${randomSize * 7}px ${randomSize * 14}px`;
+                    dialog.style.padding = `${randomSize * 6}px ${randomSize * 13}px`;
                     dialog.style.zIndex = Math.floor(Math.random() * 100) + 100;
                     
                     document.body.appendChild(dialog);
@@ -343,15 +338,15 @@
                     const dialogWidth = dialog.offsetWidth;
                     const dialogHeight = dialog.offsetHeight;
 
-                    const paddingX = 15;
-                    const paddingTop = isMobile ? 60 : 20; 
-                    // 弹幕爆发时完全避开底部缩小的卡片，让视觉焦点集中在人脸周围
-                    const paddingBottom = isMobile ? 260 : 20; 
+                    // 💡 解除限制：现在弹幕可以布满全屏幕，只留出最顶部状态栏和最边缘的极小缝隙
+                    const paddingSide = 10;
+                    const paddingTop = isMobile ? 50 : 20; 
+                    const paddingBottom = 20; 
 
-                    const maxWidth = window.innerWidth - dialogWidth - (paddingX * 2);
+                    const maxWidth = window.innerWidth - dialogWidth - (paddingSide * 2);
                     const maxHeight = window.innerHeight - dialogHeight - paddingTop - paddingBottom;
                     
-                    const randomX = Math.max(paddingX, Math.floor(Math.random() * maxWidth) + paddingX);
+                    const randomX = Math.max(paddingSide, Math.floor(Math.random() * maxWidth) + paddingSide);
                     const randomY = Math.max(paddingTop, Math.floor(Math.random() * maxHeight) + paddingTop);
                     
                     dialog.style.left = `${randomX}px`;
