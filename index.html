@@ -46,19 +46,34 @@
                 background-position: 50% 12%; 
             }
         }
-
-        /* 📱 手机端（竖屏）极致防挡脸优化 */
+        
         @media screen and (max-width: 768px) {
             body {
                 justify-content: flex-end; /* 严格靠底部对齐 */
                 align-items: center;       
                 padding-left: 20px;
                 padding-right: 20px;
+                padding-bottom: calc(env(safe-area-inset-bottom) + 10px); 
             }
             .page-background {
-                background-position: center 5%
+                background-position: center 4% !important; /* 精准定位，把人脸稳稳锁在屏幕最上方 */
             }
 
+            .letter-container {
+                max-height: 28vh !important; /* 进一步压低高度到 28%，完全不碰脸 */
+                padding: 20px 20px 12px 20px !important; /* 紧凑内边距 */
+            }
+            .letter-title {
+                font-size: 1.2rem !important;
+                margin-bottom: 8px !important;
+            }
+            .scroll-content-area {
+                margin-bottom: 10px !important;
+            }
+            .open-btn {
+                padding: 8px 38px !important;
+                font-size: 0.9rem !important;
+            }
         }
 
         /* --- 信件卡片样式（微透毛玻璃，内容可自主滚动） --- */
