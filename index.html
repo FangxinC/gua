@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>生日快乐！</title>
+    <style>
+        /* --- 基础样式 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #4a4a4a;
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden; /* 防止海量弹窗和彩带让屏幕出现滚动条 */
+            position: relative;
+        }
+
+        /* --- 📱💻 全屏填充背景层 --- */
+        .page-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+
+            background-image: url('bg.jpg'); 
+            
+            background-size: cover;       /* 无缝全屏填满 */
+            background-repeat: no-repeat;  /* 防止重复平铺 */
+            z-index: -1;                   /* 保证在最底层 */
+        }
+
+        /* 💻 电脑端（宽屏）核心：精准定位人脸，并将信封框移到右边 */
+        @media screen and (min-width: 769px) {
+            body {
+                /* 靠右对齐卡片，并留出右边 10% 的安全边距 */
+                justify-content: flex-end; 
+                align-items: center;
+                padding-right: 10%; 
+            }
+            .page-background {
+                background-position: 50% 12%; /* 精准捕捉到帅气的人脸、围巾和雪花段落 */
+            }
+        }
+
+        /* 📱 手机端（竖屏）核心：卡片居中，图片自然居中 */
+        @media screen and (max-width: 768px) {
+            body {
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+            .page-background {
+                background-position: center center;
+            }
+        }
+
+        /* --- 信件卡片样式（微透毛玻璃，与冰雪背景超绝配） --- */
+        .letter-container {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 340px; 
+            padding: 35px 25px;
+            border-radius: 24px;
+            box-shadow: 0 10px 35px rgba(40, 65, 95, 0.15);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: float 4s ease-in-out infinite;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .letter-title {
+            font-size: 1.35rem;
+            color: #3a5fcd; /* 优雅的冬日深蓝色 */
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .letter-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #4a5568;
+            text-align: left;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+
+        .open-btn {
+            background-color: #f0f4f8;
+            color: #3a5fcd;
+            border: 2px solid #3a5fcd;
+            padding: 11px 40px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(58, 95, 205, 0.15);
+            display: inline-block;
+            outline: none;
+        }
+        .open-btn:hover {
+            background-color: #3a5fcd;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+        .open-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* --- 全屏彩带画布 --- */
+        #confetti-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* --- 💻📱 连环气泡弹窗样式（呼应冬日围巾与夜空色调） --- */
+        .dialog-popup {
+            position: fixed;
+            /* 采用插画中沉稳清冷的夜空灰蓝色，配合高级的半透明毛玻璃质感 */
+            background: rgba(38, 58, 84, 0.5); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            
+            /* 淡蓝色微光边框 */
+            border: 1px solid rgba(173, 216, 230, 0.3); 
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            
+            /* 文字改成纯白，在深色半透明背景上清晰醒目 */
+            color: #ffffff; 
+            
+            opacity: 0;
+            transform: scale(0.4);
+            transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            pointer-events: none;
+            white-space: normal; 
+            max-width: 75vw; 
+            word-wrap: break-word;
+            text-align: center;
+        }
+        
+        @media screen and (min-width: 769px) {
+            .dialog-popup {
+                max-width: 320px;
+            }
+        }
+        .dialog-popup.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-background"></div>
+
+    <audio id="bg-music" src="bgm.mp3" loop></audio>
+
+    <div class="letter-container">
+        <h1 class="letter-title">瓜瓜生日快乐！</h1>
+        <div class="letter-content">祝我们的瓜瓜生日快乐！
+
+            在这个属于你的特别日子里，想把最美好的祝福都送给你。
+            愿你此后行途皆是坦路，所愿皆能如期而至。
+        </div>
+        
+        <button class="open-btn" onclick="startSurprise()">开启惊喜</button>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <script>
+
+        const dialogTexts = [
+            "奔赴前方 逃出雨季",
+            "走吧 我的副驾",
+            "我在 愿望都能实现",
+            "愿你此生 兴致盎然",
+            "想和你化作自由的风 全世界都任我们穿梭",
+            "你的每次胜利 我都想做第一个喝彩的人",
+            "心之所念皆有回响",
+            "前行之路尽为坦途",
+            "我们会将所有阴雨天 都变成晴朗的日子",
+            "不为世事所扰 不为人忧所困 愿永远轻松",
+            "我的镜头自有意志 它的每一帧都为你对焦",
+            "爱藏在每一次呼吸里 而温暖让爱意现形",
+            "你是恒久闪耀的灯塔 为我漂泊的心领航",
+            "摘下一朵宙云 赠予遥远的天际",
+            "彗尾沉睡之地 两颗心偶然相遇",
+            "摩托艇和摩托的共通之处?大概 是朝着有你的方向 一往无前 ",
+            "暮色降临 鲸声揭开蔚蓝的面纱",
+            "海浪拍打岸屿 白沙与星光共舞 祝愿伴随潮汐降临",
+            "深海祈佑你自由热烈 爱与期待穿越时空回响 停驻瞬间永恒",
+            "拿起手中的喷枪 任凭心意去定义世界的一切色彩",
+            "在海洋的末端描绘浪花 在宇宙的边缘勾勒新生",
+            "想与你坠入深海的幻梦中 在潮汐中交换彼此的呼吸",
+            "始于微时的约定 久别重逢 化作莫逆于心的相守",
+            "未来漫长的余生 与你同行 哪里都是我心之所向",
+            "爱藏在每一次呼吸里 而温暖让爱意现形",
+            "你是恒久闪耀的灯塔 为我漂泊的心领航",
+            "当宇宙将万有引力关停 你的引力依旧 带我驶向有你的目的地",
+            "当世界被无边暗魔吞噬 你踏光而来 为我打造崭新的家园",
+            "摘下一朵宙云 赠予遥远的天际",
+            "迎风启航向你奔赴的航程",
+            "跨越寰宇的边界 找寻一束破土新生的光",
+            "长夜将星光收拢 潜入漫长而寂静的梦",
+            "乘风破浪 超脱机械的极限让心跳声与指针同频",
+            "波光粼粼粼 无声陷落于寂静深海里遇见天光",
+            "日光炽热 水色连天汹涌海浪里聆听钟声的旋律",
+            "唯有在你的视野中 我才能感受自由的韵律本身",
+            "被你看见的意义在于 我能感知到自身的轻盈",
+            "宇宙的规则是遗忘 我偏要逆流而上 封存关于你的每一个瞬间",
+            "下个冬天 下下个冬天 以后每一个冬天 我都知道我们还是会在一起",
+            "我会陪你一起去往所有未知的地方",
+        ];
+
+        const dialogElements = [];
+
+        function startSurprise() {
+            initConfetti();       // 触发彩带
+            showMassiveDialogs(); // 触发海量冬日蓝弹幕
+            playMusic();          // 播放背景音乐
+        }
+
+        // --- 0. 音乐播放逻辑 ---
+        function playMusic() {
+            const music = document.getElementById('bg-music');
+            if (music) {
+                music.play().catch(err => {
+                    console.log("音频自动播放被浏览器拦截，已做兼容处理", err);
+                });
+            }
+        }
+
+        // --- 1. 彩带雨逻辑 ---
+        function initConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const pieceCount = window.innerWidth < 500 ? 70 : 140; 
+            const pieces = [];
+            /* 彩带颜色里也加入了呼应画面的冰蓝色系 */
+            const colors = ['#a2c2e8', '#e76f51', '#2a9d8f', '#e9c46a', '#3a5fcd', '#ccd5ae'];
+            
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * -canvas.height - 20;
+                    this.rotation = Math.random() * 360;
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                    this.diameter = Math.random() * 10 + 5;
+                    this.speedX = Math.random() * 4 - 2;
+                    this.speedY = Math.random() * 4 + 4;
+                    this.rotationSpeed = Math.random() * 4 - 2;
+                }
+                update() {
+                    this.x += this.speedX; this.y += this.speedY; this.rotation += this.rotationSpeed;
+                    if (this.y > canvas.height) { this.y = -20; this.x = Math.random() * canvas.width; }
+                }
+                draw() {
+                    ctx.save(); ctx.translate(this.x + this.diameter / 2, this.y + this.diameter / 2);
+                    ctx.rotate(this.rotation * Math.PI / 180); ctx.fillStyle = this.color;
+                    ctx.fillRect(-this.diameter / 2, -this.diameter / 2, this.diameter, this.diameter * 0.6); ctx.restore();
+                }
+            }
+            
+            for (let i = 0; i < pieceCount; i++) { pieces.push(new Particle()); }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- 2. 弹窗定位 ---
+        function showMassiveDialogs() {
+            const shuffledTexts = [...dialogTexts].sort(() => Math.random() - 0.5);
+            const isMobile = window.innerWidth < 500;
+
+            shuffledTexts.forEach((text, index) => {
+                setTimeout(() => {
+                    const dialog = document.createElement("div");
+                    dialog.className = "dialog-popup";
+                    dialog.textContent = text;
+
+                    const minSize = isMobile ? 0.85 : 1.0;
+                    const maxSize = isMobile ? 1.25 : 1.65;
+                    const randomSize = (Math.random() * (maxSize - minSize) + minSize).toFixed(2);
+                    
+                    dialog.style.fontSize = `${randomSize}rem`;
+                    dialog.style.padding = `${randomSize * 8}px ${randomSize * 15}px`;
+                    dialog.style.zIndex = Math.floor(Math.random() * 100) + 100;
+                    
+                    document.body.appendChild(dialog);
+                    dialogElements.push(dialog);
+
+                    const dialogWidth = dialog.offsetWidth;
+                    const dialogHeight = dialog.offsetHeight;
+
+                    const maxWidth = window.innerWidth - dialogWidth - 20;
+                    const maxHeight = window.innerHeight - dialogHeight - 20;
+                    
+                    const randomX = Math.max(10, Math.floor(Math.random() * maxWidth));
+                    const randomY = Math.max(10, Math.floor(Math.random() * maxHeight));
+                    
+                    dialog.style.left = `${randomX}px`;
+                    dialog.style.top = `${randomY}px`;
+                    
+                    setTimeout(() => dialog.classList.add("show"), 20);
+                    
+                    setTimeout(() => {
+                        dialog.classList.remove("show");
+                        setTimeout(() => {
+                            const idx = dialogElements.indexOf(dialog);
+                            if (idx !== -1) dialogElements.splice(idx, 1);
+                            dialog.remove();
+                        }, 400);
+                    }, 7500);
+
+                }, index * 260);
+            });
+        }
+
+        // 预防窗口大小缩放时弹窗出界
+        window.addEventListener("resize", () => {
+            dialogElements.forEach(dialog => {
+                const maxX = window.innerWidth - dialog.offsetWidth - 10;
+                const maxY = window.innerHeight - dialog.offsetHeight - 10;
+                const currentX = parseInt(dialog.style.left) || 0;
+                const currentY = parseInt(dialog.style.top) || 0;
+                dialog.style.left = `${Math.max(10, Math.min(currentX, maxX))}px`;
+                dialog.style.top = `${Math.max(10, Math.min(currentY, maxY))}px`;
+            });
+        });
+
+        // 微信端特定环境下的音频预加载兜底优化
+        document.addEventListener("WeixinJSBridgeReady", function () {
+            const music = document.getElementById('bg-music');
+            if (music) { music.load(); }
+        }, false);
+
+        window.addEventListener("beforeunload", () => {
+            dialogElements.forEach(dialog => dialog.remove());
+        });
+    </script>
+</body>
+</html>
