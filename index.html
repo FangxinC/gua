@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>生日快乐！</title>
+    <title>2026.06.06瓜瓜生日快乐！</title>
     <style>
         /* --- 基础样式 --- */
         * {
@@ -31,37 +31,36 @@
 
             background-image: url('bg.jpg'); 
             
-            background-size: cover;       /* 无缝全屏填满 */
-            background-repeat: no-repeat;  /* 防止重复平铺 */
-            z-index: -1;                   /* 保证在最底层 */
+            background-size: cover;      
+            background-repeat: no-repeat; 
+            z-index: -1;                   
         }
 
-        /* 💻 电脑端（宽屏）核心：精准定位人脸，并将信封框移到右边 */
+
         @media screen and (min-width: 769px) {
             body {
-                /* 靠右对齐卡片，并留出右边 10% 的安全边距 */
                 justify-content: flex-end; 
                 align-items: center;
                 padding-right: 10%; 
             }
             .page-background {
-                background-position: 50% 12%; /* 精准捕捉到帅气的人脸、围巾和雪花段落 */
+                background-position: 50% 12%; 
             }
         }
 
-        /* 📱 手机端（竖屏）核心：卡片居中，图片自然居中 */
         @media screen and (max-width: 768px) {
             body {
-                justify-content: center;
+                justify-content: flex-end;
                 align-items: center;
-                padding: 20px;
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-bottom: 8%; 
             }
             .page-background {
-                background-position: center center;
+                background-position: center 35%; 
             }
         }
 
-        /* --- 信件卡片样式（微透毛玻璃，与冰雪背景超绝配） --- */
         .letter-container {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(15px);
@@ -131,20 +130,17 @@
             z-index: 999;
         }
 
-        /* --- 💻📱 连环气泡弹窗样式（呼应冬日围巾与夜空色调） --- */
         .dialog-popup {
             position: fixed;
-            /* 采用插画中沉稳清冷的夜空灰蓝色，配合高级的半透明毛玻璃质感 */
+
             background: rgba(38, 58, 84, 0.5); 
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            
-            /* 淡蓝色微光边框 */
+
             border: 1px solid rgba(173, 216, 230, 0.3); 
             border-radius: 20px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            
-            /* 文字改成纯白，在深色半透明背景上清晰醒目 */
+
             color: #ffffff; 
             
             opacity: 0;
@@ -177,9 +173,7 @@
     <div class="letter-container">
         <h1 class="letter-title">瓜瓜生日快乐！</h1>
         <div class="letter-content">祝我们的瓜瓜生日快乐！
-
-            在这个属于你的特别日子里，想把最美好的祝福都送给你。
-            愿你此后行途皆是坦路，所愿皆能如期而至。
+            祝我们瓜瓜的19岁生日快乐，在过去一年瓜瓜也是成功地读完现在这个阶段，也马上要进入新的阶段了。祝我们的瓜瓜在接下来的计算机工程顺顺利利。
         </div>
         
         <button class="open-btn" onclick="startSurprise()">开启惊喜</button>
