@@ -54,16 +54,11 @@
                 align-items: center;       
                 padding-left: 20px;
                 padding-right: 20px;
-                padding-bottom: calc(env(safe-area-inset-bottom) + 20px); /* 留出手机底部安全区 */
             }
             .page-background {
-                background-position: center 5% !important; /* 把图片拼命往上提，人脸留在最上方 */
+                background-position: center 5%
             }
-            
-            /* 💡 手机端核心约束：锁死框的最大高度，绝对不让它往上蔓延挡脸 */
-            .letter-container {
-                max-height: 32vh !important; /* 强制限制在屏幕下方三分之一处 */
-            }
+
         }
 
         /* --- 信件卡片样式（微透毛玻璃，内容可自主滚动） --- */
