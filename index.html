@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2026.06.06瓜瓜生日快乐！</title>
     <style>
-        /* --- 基础样式 --- */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -17,11 +16,9 @@
             color: #4a4a4a;
             display: flex;
             min-height: 100vh;
-            overflow: hidden; /* 防止海量弹窗和彩带让屏幕出现滚动条 */
+            overflow: hidden;
             position: relative;
         }
-
-        /* --- 📱💻 全屏填充背景层 --- */
         .page-background {
             position: fixed;
             top: 0;
@@ -50,14 +47,14 @@
 
         @media screen and (max-width: 768px) {
             body {
-                justify-content: flex-end;
+                justify-content: flex-end !important; 
                 align-items: center;
+                padding-bottom: calc(env(safe-area-inset-bottom) + 30px) !important; 
                 padding-left: 20px;
                 padding-right: 20px;
-                padding-bottom: 8%; 
             }
             .page-background {
-                background-position: center 35%; 
+                background-position: center 8%; 
             }
         }
 
@@ -84,7 +81,7 @@
 
         .letter-title {
             font-size: 1.35rem;
-            color: #3a5fcd; /* 优雅的冬日深蓝色 */
+            color: #3a5fcd;
             margin-bottom: 15px;
             font-weight: 600;
         }
@@ -229,9 +226,9 @@
         const dialogElements = [];
 
         function startSurprise() {
-            initConfetti();       // 触发彩带
-            showMassiveDialogs(); // 触发海量冬日蓝弹幕
-            playMusic();          // 播放背景音乐
+            initConfetti();       
+            showMassiveDialogs(); 
+            playMusic();          
         }
 
         // --- 0. 音乐播放逻辑 ---
@@ -253,7 +250,6 @@
             
             const pieceCount = window.innerWidth < 500 ? 70 : 140; 
             const pieces = [];
-            /* 彩带颜色里也加入了呼应画面的冰蓝色系 */
             const colors = ['#a2c2e8', '#e76f51', '#2a9d8f', '#e9c46a', '#3a5fcd', '#ccd5ae'];
             
             class Particle {
@@ -337,7 +333,6 @@
             });
         }
 
-        // 预防窗口大小缩放时弹窗出界
         window.addEventListener("resize", () => {
             dialogElements.forEach(dialog => {
                 const maxX = window.innerWidth - dialog.offsetWidth - 10;
@@ -349,7 +344,6 @@
             });
         });
 
-        // 微信端特定环境下的音频预加载兜底优化
         document.addEventListener("WeixinJSBridgeReady", function () {
             const music = document.getElementById('bg-music');
             if (music) { music.load(); }
